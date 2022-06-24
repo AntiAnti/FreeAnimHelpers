@@ -15,7 +15,7 @@ Currenty, it conteins only animation helper to snap character feet to ground.
 
 ![Tip socket placement](readme_tip.jpg)
 
-4. Open Animation Data Modifiers window (via Windows menu) and add **SnapFootToGround** modifier.
+4. Open animation sequence asset in Animation Editor, then Animation Data Modifiers window (via Windows menu) and add **SnapFootToGround** modifier.
 
 5. Set *Snap Foot Orientation* checkbox, if you want to make feet horizontal.
 
