@@ -1,7 +1,7 @@
 # FreeAnimHelpers
 Unreal Engine 5 plugin with some animation helpers.
 
-Currenty, it conteins only animation helper to snap character feet to ground.
+Currenty, it contains only one animation helper to snap character feet to ground. I use it for turn-in-place animation like [this](https://www.youtube.com/watch?v=TX2gcdWHLpY).
 
 ## Usage
 
