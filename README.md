@@ -1,5 +1,6 @@
 # FreeAnimHelpers
-Unreal Engine 5 plugin with some animation helpers
+Unreal Engine 5 plugin with some animation helpers.
+
 Currenty, it conteins only animation helper to snap character feet to ground.
 
 ## Usage
