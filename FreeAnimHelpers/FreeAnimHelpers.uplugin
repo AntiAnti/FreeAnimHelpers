@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "FreeAnimHelpers",
+	"Description": "",
+	"Category": "Animation",
+	"CreatedBy": ""YuriNK,
+	"CreatedByURL": "ykasczc@gmail.com",
+	"DocsURL": "https://github.com/AntiAnti/FreeAnimHelpers/blob/main/README.md",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"EngineVersion": "5.0.0",
+	"CanContainContent": false,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "FreeAnimHelpersEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}
