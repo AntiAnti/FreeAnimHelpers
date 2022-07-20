@@ -28,3 +28,4 @@ Currenty, it contains only one animation helper to snap character feet to ground
 - (for myself) prepare advanced turn in-place animation
 - add/remove root motion
 - reset bones translation to skeleton (for retargeted animations)
+- insert T-pose/reference pose in first frame of animation sequence
