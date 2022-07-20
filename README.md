@@ -22,3 +22,9 @@ Currenty, it contains only one animation helper to snap character feet to ground
 6. Fill names of feet bones and tip sockets, then right click and select *Apply Modifier*.
 
 7. Save animation sequence.
+
+## To Do
+
+- (for myself) prepare advanced turn in-place animation
+- add/remove root motion
+- reset bones translation to skeleton (for retargeted animations)
