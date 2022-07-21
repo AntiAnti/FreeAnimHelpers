@@ -1,31 +1,44 @@
 # FreeAnimHelpers
 Unreal Engine 5 plugin with some animation helpers.
 
-Currenty, it contains only one animation helper to snap character feet to ground. I use it for turn-in-place animation like [this](https://www.youtube.com/watch?v=TX2gcdWHLpY).
+Currenty, it contains two useful animation helpers.
 
 ## Usage
 
-1. Copy *FreeAnimHelpers* folder to [your project]/Plugins or Engine/Plugins and enable it in Project Settings -> Plugins window.
+Copy *FreeAnimHelpers* folder to [your project]/Plugins or Engine/Plugins and enable it in Project Settings -> Plugins window.
 
-2. Open Skeletal Mesh used in animation you need to modify.
+### SnapFootToGround (Animation Modifier)
 
-3. For both legs, add tip sockets:
+Modifier to snap character feet to ground. I use it for turn-in-place animation like [this](https://www.youtube.com/watch?v=TX2gcdWHLpY).
+
+1. Open Skeletal Mesh used in animation you need to modify.
+
+2. For both legs, add tip sockets:
 - attached to foot bone;
 - located at ball and at the ground, orientation doesn't matter.
 
 ![Tip socket placement](readme_tip.jpg)
 
-4. Open animation sequence asset in Animation Editor, then Animation Data Modifiers window (via Windows menu) and add **SnapFootToGround** modifier.
+3. Open animation sequence asset in Animation Editor, then Animation Data Modifiers window (via Windows menu) and add **SnapFootToGround** modifier.
 
-5. Set *Snap Foot Orientation* checkbox, if you want to make feet horizontal.
+4. Set *Snap Foot Orientation* checkbox, if you want to make feet horizontal.
 
-6. Fill names of feet bones and tip sockets, then right click and select *Apply Modifier*.
+5. Fill names of feet bones and tip sockets, then right click and select *Apply Modifier*.
 
-7. Save animation sequence.
+6. Save animation sequence.
+
+### PrepareTurnInPlaceAsset (Animation Modifier)
+
+For my personal specific puropses. You don't need it.
+
+### ResetBonesTranslation (Animation Modifier)
+
+For all bones with "Translation Retargeting Option" = "Skeleton" in the skeleton hierarchy, this modifier changes local translation in animation sequence to skeleton-default. In other words, after thes modifier you can reset "Translation Retargeting Option" for all bones back to "Animation". Useful if you want to export to FBX animation sequence retargeted from another skeleton.
+
+Usage: add modifier to animation sequence, select desired skeletal mesh (to get local translations of bones) and apply it.
+
 
 ## To Do
 
-- (for myself) prepare advanced turn in-place animation
 - add/remove root motion
-- reset bones translation to skeleton (for retargeted animations)
 - insert T-pose/reference pose in first frame of animation sequence
