@@ -3,6 +3,7 @@
 
 #include "LockFootAtGround.h"
 #include "FreeAnimHelpersLibrary.h"
+#include "AnimationBlueprintLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "KismetAnimationLibrary.h"
 #include "Animation/AnimData/AnimDataModel.h"
@@ -100,8 +101,8 @@ void USnapFootToGround::LegIK(UAnimSequence* AnimationSequence, const FName& Foo
 
 	// b. get right-direction bone
 	float ForwMul, DownMul;
-	EAxis::Type ForwAxis = FindCoDirection(ThighBoneRefTr.Rotator(), ForwardDirection, ForwMul);
-	EAxis::Type DownAxis = FindCoDirection(ThighBoneRefTr.Rotator(), (CalfBoneRefTr.GetTranslation() - ThighBoneRefTr.GetTranslation()), DownMul);
+	EAxis::Type ForwAxis = UFreeAnimHelpersLibrary::FindCoDirection(ThighBoneRefTr.Rotator(), ForwardDirection, ForwMul);
+	EAxis::Type DownAxis = UFreeAnimHelpersLibrary::FindCoDirection(ThighBoneRefTr.Rotator(), (CalfBoneRefTr.GetTranslation() - ThighBoneRefTr.GetTranslation()), DownMul);
 	EAxis::Type RightAxis = EAxis::Type::Z;
 	/**/ if (ForwAxis != EAxis::Type::X && DownAxis != EAxis::Type::X) RightAxis = EAxis::Type::X;
 	else if (ForwAxis != EAxis::Type::Y && DownAxis != EAxis::Type::Y) RightAxis = EAxis::Type::Y;
@@ -121,7 +122,7 @@ void USnapFootToGround::LegIK(UAnimSequence* AnimationSequence, const FName& Foo
 	{
 		float FootForwMul;
 		FVector fd = (TipSocketRefTr.GetTranslation() - FootBoneRefTr.GetTranslation()).GetSafeNormal2D();
-		FootForwAxis = FindCoDirection(FootBoneRefTr.Rotator(), fd, FootForwMul);
+		FootForwAxis = UFreeAnimHelpersLibrary::FindCoDirection(FootBoneRefTr.Rotator(), fd, FootForwMul);
 
 		FVector FootForward = __rotator_direction(FootBoneRefTr.Rotator(), FootForwAxis).GetSafeNormal2D();
 		tmpRot = UKismetMathLibrary::MakeRotFromXZ(FootForward, CalfBoneRefTr.GetTranslation() - FootBoneRefTr.GetTranslation());
@@ -155,7 +156,7 @@ void USnapFootToGround::LegIK(UAnimSequence* AnimationSequence, const FName& Foo
 		{
 			FixBoneRelativeTransform(AnimationSequence->GetSkeleton(), UpdateBoneIds[UpdateBoneNames[i]], UpdateBonePoses[i]);
 		}
-		const FTransform FrameThighParentTr = UFreeAnimHelpersLibrary::GetBonePositionAtTimeInComponentSpace(AnimationSequence, ThighParentBoneName, Time);
+		const FTransform FrameThighParentTr = UFreeAnimHelpersLibrary::GetBonePositionAtTimeInCS(AnimationSequence, ThighParentBoneName, Time);
 		const FTransform FrameThighTr = UpdateBonePoses[ThighId] * FrameThighParentTr;
 		const FTransform FrameCalfTr = UpdateBonePoses[CalfId] * FrameThighTr;
 		FTransform FrameFootTr = UpdateBonePoses[FootId] * FrameCalfTr;
@@ -246,37 +247,6 @@ void USnapFootToGround::LegIK(UAnimSequence* AnimationSequence, const FName& Foo
 		Controller.AddBoneTrack(Bone);
 		Controller.SetBoneTrackKeys(Bone, OutTracks[Bone].PosKeys, OutTracks[Bone].RotKeys, OutTracks[Bone].ScaleKeys);
 	}
-}
-
-/* Find axis of rotator the closest to being parallel to the specified vectors. Returns +1.f in Multiplier if co-directed and -1.f otherwise */
-EAxis::Type USnapFootToGround::FindCoDirection(const FRotator& BoneRotator, const FVector& Direction, float& ResultMultiplier) const
-{
-	EAxis::Type RetAxis;
-	FVector dir = Direction;
-	dir.Normalize();
-
-	const FVector v1 = __rotator_direction(BoneRotator, EAxis::X);
-	const FVector v2 = __rotator_direction(BoneRotator, EAxis::Y);
-	const FVector v3 = __rotator_direction(BoneRotator, EAxis::Z);
-
-	const float dp1 = FVector::DotProduct(v1, dir);
-	const float dp2 = FVector::DotProduct(v2, dir);
-	const float dp3 = FVector::DotProduct(v3, dir);
-
-	if (FMath::Abs(dp1) > FMath::Abs(dp2) && FMath::Abs(dp1) > FMath::Abs(dp3)) {
-		RetAxis = EAxis::X;
-		ResultMultiplier = dp1 > 0.f ? 1.f : -1.f;
-	}
-	else if (FMath::Abs(dp2) > FMath::Abs(dp1) && FMath::Abs(dp2) > FMath::Abs(dp3)) {
-		RetAxis = EAxis::Y;
-		ResultMultiplier = dp2 > 0.f ? 1.f : -1.f;
-	}
-	else {
-		RetAxis = EAxis::Z;
-		ResultMultiplier = dp3 > 0.f ? 1.f : -1.f;
-	}
-
-	return RetAxis;
 }
 
 void USnapFootToGround::FixBoneRelativeTransform(USkeleton* Skeleton, int32 BoneIndex, FTransform& InOutBone) const

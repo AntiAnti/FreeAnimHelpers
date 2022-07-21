@@ -7,10 +7,9 @@
 #include "AnimationModifier.h"
 #include "LockFootAtGround.generated.h"
 
-class UMATCurveToBoneRules;
-
 /**
- * Animation modifier to bake curves animation to bones using UMATCurveToBoneRules
+ * Animation modifier to make feet slide at the ground
+ * Usage: https://dev.epicgames.com/community/learning/tutorials/nOJx/unreal-engine-implemening-character-turn-in-place-animation
  */
 UCLASS()
 class FREEANIMHELPERSEDITOR_API USnapFootToGround : public UAnimationModifier
@@ -46,7 +45,5 @@ public:
 private:
 	void LegIK(UAnimSequence* AnimationSequence, const FName& FootBoneName, const FName& FootTipName) const;
 
-	/* Find axis of rotator the closest to being parallel to the specified vectors. Returns +1.f in Multiplier if co-directed and -1.f otherwise */
-	EAxis::Type FindCoDirection(const FRotator& BoneRotator, const FVector& Direction, float& ResultMultiplier) const;
 	void FixBoneRelativeTransform(USkeleton* Skeleton, int32 BoneIndex, FTransform& InOutBone) const;
 };
