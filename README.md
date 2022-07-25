@@ -1,7 +1,7 @@
 # FreeAnimHelpers
 Unreal Engine 5 plugin with some animation helpers.
 
-Currenty, it contains two useful animation helpers.
+Currenty, it contains three useful animation helpers.
 
 ## Usage
 
@@ -37,10 +37,12 @@ For all bones with "Translation Retargeting Option" = "Skeleton" in the skeleton
 
 Usage: add modifier to animation sequence, select desired skeletal mesh (to get local translations of bones) and apply it.
 
+### Animate IK Bones
+
+Copy component-space transforms of skeleton bones (usually wrists and feet) to MetaHuamn/Mannequin IK bones (ik_foot_r etc).
 
 ## To Do
 
 - add/remove root motion;
 - insert T-pose/reference pose in the first frame of animation sequence;
 - animate twist bones;
-- copy transforms of wrists and feet to mannequin/metahuman IK bones.
