@@ -40,5 +40,7 @@ Usage: add modifier to animation sequence, select desired skeletal mesh (to get 
 
 ## To Do
 
-- add/remove root motion
-- insert T-pose/reference pose in first frame of animation sequence
+- add/remove root motion;
+- insert T-pose/reference pose in the first frame of animation sequence;
+- create twists;
+- copy transforms of wrists and feet to mannequin/metahuman IK bones.
