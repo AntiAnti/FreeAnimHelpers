@@ -41,6 +41,10 @@ Usage: add modifier to animation sequence, select desired skeletal mesh (to get 
 
 Copy component-space transforms of skeleton bones (usually wrists and feet) to MetaHuamn/Mannequin IK bones (ik_foot_r etc).
 
+### Reset Scale of Root Bone
+
+Small function to reset scale of root bone in skeletal mesh and preserve size of the model. See [this video](https://youtu.be/o04BHS8e_M4).
+
 ## To Do
 
 - add/remove root motion;
