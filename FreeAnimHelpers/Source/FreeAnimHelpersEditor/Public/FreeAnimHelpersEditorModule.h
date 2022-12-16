@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Framework/Commands/Commands.h"
 #include "Modules/ModuleManager.h"
 
 class FToolBarBuilder;
@@ -16,4 +17,10 @@ public:
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
 	
+	void ResetRootScale(TArray<FAssetData> SelectedAssets);
+
+protected:
+	TSharedPtr<FUICommandList> CommandList;
+
+	FDelegateHandle ContentBrowserMenuExtenderHandle;
 };

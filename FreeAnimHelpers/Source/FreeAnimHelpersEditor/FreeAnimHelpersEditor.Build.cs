@@ -45,7 +45,8 @@ public class FreeAnimHelpersEditor : ModuleRules
 				"AnimationModifiers",
 				"AnimGraphRuntime",
 				"AnimGraph",
-				"BlueprintGraph"
+				"BlueprintGraph",
+				"ContentBrowser"
 			}
 			);
 		

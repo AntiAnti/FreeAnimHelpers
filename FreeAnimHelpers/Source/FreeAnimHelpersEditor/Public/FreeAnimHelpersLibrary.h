@@ -9,6 +9,8 @@
 
 class UAnimSequence;
 class USkeletalMesh;
+class UCurveFloat;
+class UCurveVector;
 
 /**
  * Global functions for Editor module
@@ -30,9 +32,31 @@ public:
 	/* For reference pose: get bone transform in component space by bone index */
 	static FTransform GetBoneRefPositionInComponentSpaceByIndex(const UAnimSequence* AnimationSequence, int32 BoneIndex);
 
+	/* For reference pose: get bone transform in component space by bone index, for reference skeleton */
+	static FTransform GetRefSkeletonBonePositionByIndex(const FReferenceSkeleton& RefSkeleton, int32 BoneIndex);
+
 	/* For pose in animation: get bone transform in compnent space */
-	UFUNCTION(BlueprintCallable, Category = "FreeAnimHelpersLibrary")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Get Bone Transform at Animation Time"), Category = "FreeAnimHelpersLibrary")
 	static FTransform GetBonePositionAtTimeInCS(const UAnimSequence* AnimationSequence, const FName& BoneName, float Time);
+
+	/* For pose in animation: get socket transform in compnent space */
+	UFUNCTION(BlueprintCallable, meta=(DisplayName="Get Socket Transform at Animation Time"), Category = "FreeAnimHelpersLibrary")
+	static FTransform GetSocketPositionAtTimeInCS(const UAnimSequence* AnimationSequence, const FName& SocketName, float Time);
+
+	UFUNCTION(BlueprintCallable, Category = "FreeAnimHelpersLibrary")
+	static void ResetSkinndeAssetRootBoneScale(USkeletalMesh* SkeletalMesh);
+
+	UFUNCTION(BlueprintCallable, Category = "FreeAnimHelpersLibrary")
+	static void AddFloatCurveKey(UCurveFloat* Curve, float Time, float Value, bool bInterpCubic);
+
+	UFUNCTION(BlueprintCallable, Category = "FreeAnimHelpersLibrary")
+	static void AddVectorCurveKey(UCurveVector* Curve, float Time, FVector Value, bool bInterpCubic);
+
+	UFUNCTION(BlueprintCallable, Category = "FreeAnimHelpersLibrary")
+	static void ClearFloatCurve(UCurveFloat* Curve);
+
+	UFUNCTION(BlueprintCallable, Category = "FreeAnimHelpersLibrary")
+	static void ClearVectorCurve(UCurveVector* Curve);
 
 	/* For pose in animation: get bone transform in compnent space (relative to another bone; use for optimization) */
 	static FTransform GetBonePositionAtTimeInCS_ToParent(const UAnimSequence* AnimationSequence, const FName& BoneName, float Time, const FTransform& ParentBonePos, const int32 ParentBoneIndex);

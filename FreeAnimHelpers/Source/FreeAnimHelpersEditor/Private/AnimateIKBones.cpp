@@ -117,22 +117,16 @@ void UAnimateIKBones::OnApply_Implementation(UAnimSequence* AnimationSequence)
 					: HumanoidBones[ParentBoneName];
 			}
 
-			if (FramePos.Contains(IKBone))
-			{
-				FramePos[IKBone] = SourcePos;
-			}
-
 			FTransform RelativeTr = SourcePos.GetRelativeTransform(ParentPos);
-
-			if (FrameIndex < 30)
-			{
-				//UE_LOG(LogTemp, Log, TEXT("%d IKBone=%s ParentBone=%s TargetLoc[%s]=%s ParentBone=%s"), FrameIndex, *IKBone.ToString(), *ParentBoneName.ToString(), *FKBone.ToString(), *SourcePos.GetTranslation().ToString(), *ParentPos.GetTranslation().ToString());
-			}
-
 			// Save to track
 			OutTracks[IKBone].PosKeys[FrameIndex] = (FVector3f)RelativeTr.GetTranslation();
 			OutTracks[IKBone].RotKeys[FrameIndex] = (FQuat4f)RelativeTr.GetRotation();
 			OutTracks[IKBone].ScaleKeys[FrameIndex] = (FVector3f)RelativeTr.GetScale3D();
+
+			if (FTransform* PositionToSave = FramePos.Find(IKBone))
+			{
+				*PositionToSave = SourcePos;
+			}
 		}
 	}
 

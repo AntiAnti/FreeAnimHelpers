@@ -116,7 +116,7 @@ void USnapFootToGround::LegIK(UAnimSequence* AnimationSequence, const FName& Foo
 	FTransform CalfOrientationConverter = CalfBoneRefTr.GetRelativeTransform(FTransform(tmpRot, CalfBoneRefTr.GetTranslation()));
 
 	// e. also need foot orientation
-	EAxis::Type FootForwAxis;
+	EAxis::Type FootForwAxis = EAxis::Type::X;
 	FTransform FootOrientationConverter;
 	if (bSnapFootRotation)
 	{
@@ -178,7 +178,7 @@ void USnapFootToGround::LegIK(UAnimSequence* AnimationSequence, const FName& Foo
 			FootZ = FMath::Min(TipZ, HeelZ);
 		}
 
-		if (FootZ > GroundLevel)
+		if (true || FootZ > GroundLevel)
 		{
 			// IK Target with modified Z coordinate
 			FTransform FootTargetIK = FrameFootTr;
