@@ -54,7 +54,7 @@ Required settings in the modifier:
 - Root Motion to Root Bone: checked/true
 - Root Motion from Curves: checked/true
 
-See [ideo](https://youtu.be/h1-_l7RE4U4).
+See [video](https://youtu.be/h1-_l7RE4U4).
 
 ## To Do
 
