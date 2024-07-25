@@ -45,6 +45,14 @@ Copy component-space transforms of skeleton bones (usually wrists and feet) to M
 
 Small function to reset scale of root bone in skeletal mesh and preserve size of the model. See [this video](https://youtu.be/o04BHS8e_M4).
 
+### Distance Curve ModifierEx
+
+Despite the name, currently useful only to add root motion to animation. Root movement should be saved in curves "RootMotion_X",  "RootMotion_Y" and, optionally, "RootMotion_Z".
+Required modifier settings:
+- Root Motion to Curves: unchecked/false
+- Root Motion to Root Bone: checked/true
+- Root Motion from Curves: checked/true
+
 ## To Do
 
 - add/remove root motion;
