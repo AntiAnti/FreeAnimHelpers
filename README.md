@@ -39,7 +39,7 @@ Usage: add modifier to animation sequence, select desired skeletal mesh (to get 
 
 ### Animate IK Bones
 
-Copy component-space transforms of skeleton bones (usually wrists and feet) to MetaHuamn/Mannequin IK bones (ik_foot_r etc).
+Copy component-space transforms of skeleton bones (usually wrists and feet) to MetaHuman/Mannequin IK bones (ik_foot_r etc).
 
 ### Reset Scale of Root Bone
 
@@ -48,13 +48,16 @@ Small function to reset scale of root bone in skeletal mesh and preserve size of
 ### Distance Curve ModifierEx
 
 Despite the name, currently useful only to add root motion to animation. Root movement should be saved in curves "RootMotion_X",  "RootMotion_Y" and, optionally, "RootMotion_Z".
-Required modifier settings:
+
+Required settings in the modifier:
 - Root Motion to Curves: unchecked/false
 - Root Motion to Root Bone: checked/true
 - Root Motion from Curves: checked/true
 
+See [ideo](https://youtu.be/h1-_l7RE4U4).
+
 ## To Do
 
-- add/remove root motion;
+- remove root motion;
 - insert T-pose/reference pose in the first frame of animation sequence;
 - animate twist bones;
