@@ -49,7 +49,7 @@ void FFreeAnimHelpersEditorModule::ShutdownModule()
 	if (ContentBrowserModule && ContentBrowserMenuExtenderHandle.IsValid())
 	{
 		ContentBrowserModule->GetAllAssetViewContextMenuExtenders().RemoveAll(
-			[=](const FContentBrowserMenuExtender_SelectedAssets& InDelegate)
+			[this](const FContentBrowserMenuExtender_SelectedAssets& InDelegate)
 			{
 				return ContentBrowserMenuExtenderHandle == InDelegate.GetHandle();
 			}
@@ -59,6 +59,8 @@ void FFreeAnimHelpersEditorModule::ShutdownModule()
 
 void FFreeAnimHelpersEditorModule::ResetRootScale(TArray<FAssetData> SelectedAssets)
 {
+	bool bKeepSize = (EAppReturnType::Type::Yes == FMessageDialog::Open(EAppMsgType::Type::YesNo, FText::FromString(TEXT("Keep current size of the model?"))));
+
 	for (auto& Asset : SelectedAssets)
 	{
 		if (USkeletalMesh* Mesh = Cast<USkeletalMesh>(Asset.GetAsset()))
@@ -67,7 +69,7 @@ void FFreeAnimHelpersEditorModule::ResetRootScale(TArray<FAssetData> SelectedAss
 				const FScopedTransaction Transaction(LOCTEXT("ResetRootScale", "Reset root bone scale"));
 				Mesh->Modify();
 				Mesh->GetSkeleton()->Modify();
-				UFreeAnimHelpersLibrary::ResetSkinndeAssetRootBoneScale(Mesh);
+				UFreeAnimHelpersLibrary::ResetSkinndeAssetRootBoneScale(Mesh, bKeepSize);
 			}			
 		}
 	}

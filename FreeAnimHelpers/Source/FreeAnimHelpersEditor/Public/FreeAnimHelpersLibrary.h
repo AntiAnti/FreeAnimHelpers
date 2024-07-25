@@ -44,7 +44,7 @@ public:
 	static FTransform GetSocketPositionAtTimeInCS(const UAnimSequence* AnimationSequence, const FName& SocketName, float Time);
 
 	UFUNCTION(BlueprintCallable, Category = "FreeAnimHelpersLibrary")
-	static void ResetSkinndeAssetRootBoneScale(USkeletalMesh* SkeletalMesh);
+	static void ResetSkinndeAssetRootBoneScale(USkeletalMesh* SkeletalMesh, bool bKeepModelSize = true);
 
 	UFUNCTION(BlueprintCallable, Category = "FreeAnimHelpersLibrary")
 	static void AddFloatCurveKey(UCurveFloat* Curve, float Time, float Value, bool bInterpCubic);
@@ -66,4 +66,7 @@ public:
 
 	/* Find float curve */
 	static const FFloatCurve* GetFloatCurve(const UAnimSequence* AnimationSequence, const FName& CurveName, FAnimationCurveIdentifier& OutCurveId);
+
+	static void GetBonePoseForTime(const UAnimSequenceBase* AnimationSequenceBase, const FName& BoneName, float Time, bool bExtractRootMotion, FTransform& Pose, const USkeletalMesh* PreviewMesh = nullptr);
+	static void GetBonePosesForTime(const UAnimSequenceBase* AnimationSequenceBase, const TArray<FName>& BoneNames, float Time, bool bExtractRootMotion, TArray<FTransform>& Poses, const USkeletalMesh* PreviewMesh = nullptr);
 };

@@ -3,6 +3,7 @@
 
 #include "FreeAnimHelpersLibrary.h"
 #include "AnimationBlueprintLibrary.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "Animation/AnimSequence.h"
 #include "Engine/SkeletalMesh.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -157,7 +158,7 @@ FTransform UFreeAnimHelpersLibrary::GetBonePositionAtTimeInCS_ToParent(const UAn
 	while (TransformIndex != INDEX_NONE && TransformIndex != ParentBoneIndex)
 	{
 		FTransform ParentBoneTr;
-		UAnimationBlueprintLibrary::GetBonePoseForTime(AnimationSequence, RefSkeleton.GetBoneName(TransformIndex), Time, false, ParentBoneTr);
+		UFreeAnimHelpersLibrary::GetBonePoseForTime(AnimationSequence, RefSkeleton.GetBoneName(TransformIndex), Time, false, ParentBoneTr);
 
 		EBoneTranslationRetargetingMode::Type RetargetType = Skeleton->GetBoneTranslationRetargetingMode(TransformIndex);
 		if (RetargetType == EBoneTranslationRetargetingMode::Type::Skeleton)
@@ -228,7 +229,7 @@ FTransform UFreeAnimHelpersLibrary::GetSocketPositionAtTimeInCS(const UAnimSeque
 	}
 }
 
-void UFreeAnimHelpersLibrary::ResetSkinndeAssetRootBoneScale(USkeletalMesh* SkeletalMesh)
+void UFreeAnimHelpersLibrary::ResetSkinndeAssetRootBoneScale(USkeletalMesh* SkeletalMesh, bool bKeepModelSize)
 {
 	if (!IsValid(SkeletalMesh))
 	{
@@ -251,11 +252,14 @@ void UFreeAnimHelpersLibrary::ResetSkinndeAssetRootBoneScale(USkeletalMesh* Skel
 		FReferenceSkeletonModifier RefSkelModifier(MeshRefSkeleton, Skeleton);
 
 		RefSkelModifier.UpdateRefPoseTransform(0, RootBoneTr);
-		for (int32 BoneIndex = 1; BoneIndex < MeshRefPose.Num(); ++BoneIndex)
+		if (bKeepModelSize)
 		{
-			FTransform UnscaledBoneTr = MeshRefPose[BoneIndex];
-			UnscaledBoneTr.ScaleTranslation(ApplyScale);
-			RefSkelModifier.UpdateRefPoseTransform(BoneIndex, UnscaledBoneTr);
+			for (int32 BoneIndex = 1; BoneIndex < MeshRefPose.Num(); ++BoneIndex)
+			{
+				FTransform UnscaledBoneTr = MeshRefPose[BoneIndex];
+				UnscaledBoneTr.ScaleTranslation(ApplyScale);
+				RefSkelModifier.UpdateRefPoseTransform(BoneIndex, UnscaledBoneTr);
+			}
 		}
 	}
 	// this is called actually in FReferenceSkeletonModifier destructor
@@ -287,21 +291,100 @@ void UFreeAnimHelpersLibrary::ResetSkinndeAssetRootBoneScale(USkeletalMesh* Skel
 	SkeletalMesh->SetNegativeBoundsExtension(FVector::ZeroVector);
 	SkeletalMesh->CalculateExtendedBounds();
 
-	FBoxSphereBounds b = SkeletalMesh->GetBounds();
-	
-	UE_LOG(LogTemp, Log, TEXT("New Bounds = %s | Radius = %f"), *b.BoxExtent.ToString(), (float)b.SphereRadius);
-
 	FMessageDialog::Open(EAppMsgType::Type::Ok, NSLOCTEXT("FreeAnimHelpersLibrary", "RootBoneScaleSucceed", "Root bone was rescaled successfully. Please restart Unreal Editor."));
 }
 
 const FFloatCurve* UFreeAnimHelpersLibrary::GetFloatCurve(const UAnimSequence* AnimationSequence, const FName& CurveName, FAnimationCurveIdentifier& OutCurveId)
 {
 	// Get Container name
-	const FName ContainerName = UAnimationBlueprintLibrary::RetrieveContainerNameForCurve(AnimationSequence, CurveName);
-	if (ContainerName == NAME_None) return nullptr;
+	const ERawCurveTrackTypes t = UAnimationBlueprintLibrary::RetrieveCurveTypeForCurve(AnimationSequence, CurveName);
+	if (t != ERawCurveTrackTypes::RCT_Float)
+	{
+		return nullptr;
+	}
 	// Read Curve ID
-	const FSmartName CurveSmartName = UAnimationBlueprintLibrary::RetrieveSmartNameForCurve(AnimationSequence, CurveName, ContainerName);
-	OutCurveId = FAnimationCurveIdentifier(CurveSmartName, ERawCurveTrackTypes::RCT_Float);
+	OutCurveId = FAnimationCurveIdentifier(CurveName, ERawCurveTrackTypes::RCT_Float);
 	// Get Curve Data
 	return static_cast<const FFloatCurve*>(AnimationSequence->GetDataModel()->FindCurve(OutCurveId));
+}
+
+void UFreeAnimHelpersLibrary::GetBonePoseForTime(const UAnimSequenceBase* AnimationSequenceBase, const FName& BoneName, float Time, bool bExtractRootMotion, FTransform& Pose, const USkeletalMesh* PreviewMesh /*= nullptr*/)
+{
+	TArray<FName> BoneNames = { BoneName };
+	TArray<FTransform> Poses;
+	Poses.SetNum(1);
+	GetBonePosesForTime(AnimationSequenceBase, BoneNames, Time, bExtractRootMotion, Poses, PreviewMesh);
+
+	if (Poses.Num() == 1)
+	{
+		Pose = Poses[0];
+	}
+}
+
+void UFreeAnimHelpersLibrary::GetBonePosesForTime(const UAnimSequenceBase* AnimationSequenceBase, const TArray<FName>& BoneNames, float Time, bool bExtractRootMotion, TArray<FTransform>& Poses, const USkeletalMesh* PreviewMesh /*= nullptr*/)
+{
+#if ENGINE_MINOR_VERSION > 1
+	Poses.Empty(BoneNames.Num());
+	if (!AnimationSequenceBase && AnimationSequenceBase->GetSkeleton())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Animation Sequence supplied for GetBonePosesForTime"));
+	}
+
+	Poses.AddDefaulted(BoneNames.Num());
+
+	// Need this for FCompactPose
+	FMemMark Mark(FMemStack::Get());
+
+	const FReferenceSkeleton& RefSkeleton = (PreviewMesh) ? PreviewMesh->GetRefSkeleton() : AnimationSequenceBase->GetSkeleton()->GetReferenceSkeleton();
+
+	if (Time < 0.f || Time > AnimationSequenceBase->GetDataModel()->GetPlayLength())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid time value %f for Animation Sequence %s supplied for GetBonePosesForTime"), Time, *AnimationSequenceBase->GetName());
+	}
+
+	if (BoneNames.IsEmpty())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid or no bone names specified to retrieve poses given Animation Sequence %s in GetBonePosesForTime"), *AnimationSequenceBase->GetName());
+	}
+
+	int32 Frame = AnimationSequenceBase->GetFrameAtTime(Time);
+
+	for (int32 BoneNameIndex = 0; BoneNameIndex < BoneNames.Num(); ++BoneNameIndex)
+	{
+		const FName& BoneName = BoneNames[BoneNameIndex];
+		FTransform& Transform = Poses[BoneNameIndex];
+		
+		if (AnimationSequenceBase->GetDataModel()->IsValidBoneTrackName(BoneName))
+		{
+			const EAnimInterpolationType InterpolationType = [AnimationSequenceBase]() -> EAnimInterpolationType
+			{
+				if (const UAnimSequence* AnimationSequence = Cast<const UAnimSequence>(AnimationSequenceBase))
+				{
+					return AnimationSequence->Interpolation;
+				}
+
+				return EAnimInterpolationType::Linear;
+			}();
+
+			Transform = AnimationSequenceBase->GetDataModel()->EvaluateBoneTrackTransform(BoneName, FFrameTime(Frame), InterpolationType);
+			//UE::Anim::GetBoneTransformFromModel(AnimationSequenceBase->GetDataModel(), Transform, AnimationSequenceBase->GetDataModel()->GetBoneTrackIndexByName(BoneName), Time, InterpolationType);
+		}
+		else
+		{
+			// otherwise, get ref pose if exists
+			const int32 BoneIndex = RefSkeleton.FindBoneIndex(BoneName);
+			if (BoneIndex != INDEX_NONE)
+			{
+				Transform = RefSkeleton.GetRefBonePose()[BoneIndex];
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Invalid bone name %s for Animation Sequence %s supplied for GetBonePosesForTime"), *BoneName.ToString(), *AnimationSequenceBase->GetName());
+				Transform = FTransform::Identity;
+			}
+		}
+	}
+#else
+	UAnimationBlueprintLibrary::GetBonePosesForTime(AnimationSequenceBase, BoneNames, Time, bExtractRootMotion, Poses, PreviewMesh);
+#endif
 }

@@ -2,6 +2,8 @@
 // ykasczc@gmail.com
 
 #include "ResetBonesTranslation.h"
+#include "FreeAnimHelpersLibrary.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "Animation/AnimData/AnimDataModel.h"
 #include "Animation/AnimData/IAnimationDataController.h"
 #include "Animation/AnimSequence.h"
@@ -55,7 +57,10 @@ void UResetBonesTranslation::OnApply_Implementation(UAnimSequence* AnimationSequ
 
 	for (int32 FrameIndex = 0; FrameIndex < KeysNum; FrameIndex++)
 	{
-		UAnimationBlueprintLibrary::GetBonePosesForFrame(AnimationSequence, BoneNames, FrameIndex, false, Bones);
+		float Time;
+		UAnimationBlueprintLibrary::GetTimeAtFrame(AnimationSequence, FrameIndex, Time);
+
+		UFreeAnimHelpersLibrary::GetBonePosesForTime(AnimationSequence, BoneNames, Time, false, Bones);
 
 		for (int32 Index = 0; Index < BoneNames.Num(); Index++)
 		{
@@ -71,7 +76,11 @@ void UResetBonesTranslation::OnApply_Implementation(UAnimSequence* AnimationSequ
 	for (const auto& BoneName : BoneNames)
 	{
 		Controller.RemoveBoneTrack(BoneName);
+#if ENGINE_MINOR_VERSION < 2
 		Controller.AddBoneTrack(BoneName);
+#else
+		Controller.AddBoneCurve(BoneName);
+#endif
 		Controller.SetBoneTrackKeys(BoneName, OutTracks[BoneName].PosKeys, OutTracks[BoneName].RotKeys, OutTracks[BoneName].ScaleKeys);
 	}
 }

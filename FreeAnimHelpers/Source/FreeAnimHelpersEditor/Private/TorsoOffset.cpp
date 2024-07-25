@@ -11,6 +11,7 @@
 #include "Animation/AnimSequence.h"
 #include "Animation/AnimTypes.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Runtime/Launch/Resources/Version.h"
 
 #define __rotator_direction(Rotator, Axis) FRotationMatrix(Rotator).GetScaledAxis(Axis)
 
@@ -155,7 +156,11 @@ void UTorsoOffset::OnApply_Implementation(UAnimSequence* AnimationSequence)
 	{
 		const FName& BoneName = Track.Key;
 		Controller.RemoveBoneTrack(BoneName);
+#if ENGINE_MINOR_VERSION < 2
 		Controller.AddBoneTrack(BoneName);
+#else
+		Controller.AddBoneCurve(BoneName);
+#endif
 		Controller.SetBoneTrackKeys(BoneName, Track.Value.PosKeys, Track.Value.RotKeys, Track.Value.ScaleKeys);
 	}
 }

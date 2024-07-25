@@ -2,6 +2,7 @@
 // ykasczc@gmail.com
 
 #include "PrepareTurnInPlaceAsset.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "FreeAnimHelpersLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "AnimationBlueprintLibrary.h"
@@ -127,7 +128,11 @@ void UPrepareTurnInPlaceAsset::OnApply_Implementation(UAnimSequence* AnimationSe
 
 	// Update pelvis
 	Controller.RemoveBoneTrack(PelvisBoneName);
+#if ENGINE_MINOR_VERSION < 2
 	Controller.AddBoneTrack(PelvisBoneName);
+#else
+	Controller.AddBoneCurve(PelvisBoneName);
+#endif
 	Controller.SetBoneTrackKeys(PelvisBoneName, OutTrack.PosKeys, OutTrack.RotKeys, OutTrack.ScaleKeys);
 
 	// Fill curves

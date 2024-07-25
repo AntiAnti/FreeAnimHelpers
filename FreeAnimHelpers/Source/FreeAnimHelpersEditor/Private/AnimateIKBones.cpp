@@ -2,6 +2,7 @@
 // ykasczc@gmail.com
 
 #include "AnimateIKBones.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "Animation/AnimData/AnimDataModel.h"
 #include "Animation/AnimData/IAnimationDataController.h"
 #include "FreeAnimHelpersLibrary.h"
@@ -136,7 +137,11 @@ void UAnimateIKBones::OnApply_Implementation(UAnimSequence* AnimationSequence)
 	{
 		const FName& BoneName = Track.Key;
 		Controller.RemoveBoneTrack(BoneName);
+#if ENGINE_MINOR_VERSION < 2
 		Controller.AddBoneTrack(BoneName);
+#else
+		Controller.AddBoneCurve(BoneName);
+#endif
 		Controller.SetBoneTrackKeys(BoneName, Track.Value.PosKeys, Track.Value.RotKeys, Track.Value.ScaleKeys);
 	}
 }

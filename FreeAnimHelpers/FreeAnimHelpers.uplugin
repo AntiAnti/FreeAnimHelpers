@@ -10,6 +10,7 @@
 	"DocsURL": "https://github.com/AntiAnti/FreeAnimHelpers/blob/main/README.md",
 	"MarketplaceURL": "",
 	"SupportURL": "",
+	"EngineVersion": "5.4.0",
 	"CanContainContent": false,
 	"Installed": true,
 	"Modules": [
