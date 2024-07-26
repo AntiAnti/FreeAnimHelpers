@@ -27,11 +27,11 @@ Modifier to snap character feet to ground. I use it for turn-in-place animation 
 
 6. Save animation sequence.
 
-### PrepareTurnInPlaceAsset (Animation Modifier)
+### Prepare TurnInPlace Asset (Animation Modifier)
 
 For my personal specific puropses. You don't need it.
 
-### ResetBonesTranslation (Animation Modifier)
+### Reset Bones Translation (Animation Modifier)
 
 For all bones with "Translation Retargeting Option" = "Skeleton" in the skeleton hierarchy, this modifier changes local translation in animation sequence to skeleton-default. In other words, after thes modifier you can reset "Translation Retargeting Option" for all bones back to "Animation". Useful if you want to export to FBX animation sequence retargeted from another skeleton.
 
@@ -45,9 +45,16 @@ Copy component-space transforms of skeleton bones (usually wrists and feet) to M
 
 Small function to reset scale of root bone in skeletal mesh and preserve size of the model. See [this video](https://youtu.be/o04BHS8e_M4).
 
-### Distance Curve ModifierEx (Animation Modifier)
+### Distance Curve Modifier Ex (Animation Modifier)
 
 Despite the name, currently useful only to add root motion to animation. Root movement should be saved in curves "RootMotion_X",  "RootMotion_Y" and, optionally, "RootMotion_Z".
+
+Required settings in the modifier:
+- Root Motion to Curves: unchecked/false
+- Root Motion to Root Bone: checked/true
+- Root Motion from Curves: checked/true
+
+See [video](https://youtu.be/h1-_l7RE4U4).
 
 ### Fingers Curl (Animation Modifier)
 
@@ -56,13 +63,6 @@ Add some local rotation to fingers.
 ## Torso Offset (Animation Modifier)
 
 Leg IK modifier. Add some vertical offset of pelvis bone, but preserve feet locations.
-
-Required settings in the modifier:
-- Root Motion to Curves: unchecked/false
-- Root Motion to Root Bone: checked/true
-- Root Motion from Curves: checked/true
-
-See [video](https://youtu.be/h1-_l7RE4U4).
 
 ## To Do
 
