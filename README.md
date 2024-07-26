@@ -37,17 +37,25 @@ For all bones with "Translation Retargeting Option" = "Skeleton" in the skeleton
 
 Usage: add modifier to animation sequence, select desired skeletal mesh (to get local translations of bones) and apply it.
 
-### Animate IK Bones
+### Animate IK Bones (Animation Modifier)
 
 Copy component-space transforms of skeleton bones (usually wrists and feet) to MetaHuman/Mannequin IK bones (ik_foot_r etc).
 
-### Reset Scale of Root Bone
+### Reset Scale of Root Bone (Animation Modifier)
 
 Small function to reset scale of root bone in skeletal mesh and preserve size of the model. See [this video](https://youtu.be/o04BHS8e_M4).
 
-### Distance Curve ModifierEx
+### Distance Curve ModifierEx (Animation Modifier)
 
 Despite the name, currently useful only to add root motion to animation. Root movement should be saved in curves "RootMotion_X",  "RootMotion_Y" and, optionally, "RootMotion_Z".
+
+### Fingers Curl (Animation Modifier)
+
+Add some local rotation to fingers.
+
+## Torso Offset (Animation Modifier)
+
+Leg IK modifier. Add some vertical offset of pelvis bone, but preserve feet locations.
 
 Required settings in the modifier:
 - Root Motion to Curves: unchecked/false
