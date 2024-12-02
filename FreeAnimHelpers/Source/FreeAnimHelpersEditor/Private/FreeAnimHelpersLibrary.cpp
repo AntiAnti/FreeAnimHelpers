@@ -269,7 +269,7 @@ void UFreeAnimHelpersLibrary::ResetSkinndeAssetRootBoneScale(USkeletalMesh* Skel
 	Skeleton->UpdateReferencePoseFromMesh(SkeletalMesh);
 
 	// Update bounds
-	FVector MeshBoxBounds;
+	FVector MeshBoxBounds = FVector::ZeroVector;
 	int32 BonesNum = MeshRefSkeleton.GetRefBonePose().Num();
 	for (int32 BoneIndex = 0; BoneIndex < BonesNum; BoneIndex++)
 	{
