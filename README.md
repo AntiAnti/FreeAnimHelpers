@@ -64,6 +64,12 @@ Add some local rotation to fingers.
 
 Leg IK modifier. Add some vertical offset of pelvis bone, but preserve feet locations.
 
+## Copy Bones Local Space
+
+Copy rotation and/or translation of bones chain from one animation sequence to another. The simpliest case: copy hand pose.
+
+See [video](https://www.youtube.com/watch?v=bMiUPFiT0bU).
+
 ## To Do
 
 - remove root motion;
