@@ -58,6 +58,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "FreeAnimHelpersLibrary")
 	static void ClearVectorCurve(UCurveVector* Curve);
 
+	UFUNCTION(BlueprintPure, Category = "FreeAnimHelpersLibrary")
+	static float GetAnimationNotifyAbsTime(const FAnimNotifyEvent& AnimNotify);
+
 	/* For pose in animation: get bone transform in compnent space (relative to another bone; use for optimization) */
 	static FTransform GetBonePositionAtTimeInCS_ToParent(const UAnimSequence* AnimationSequence, const FName& BoneName, float Time, const FTransform& ParentBonePos, const int32 ParentBoneIndex);
 

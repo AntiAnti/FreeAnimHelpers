@@ -3,6 +3,7 @@
 
 #include "FreeAnimHelpersLibrary.h"
 #include "AnimationBlueprintLibrary.h"
+#include "Animation/AnimLinkableElement.h"
 #include "Runtime/Launch/Resources/Version.h"
 #include "Animation/AnimSequence.h"
 #include "Engine/SkeletalMesh.h"
@@ -141,6 +142,11 @@ void UFreeAnimHelpersLibrary::ClearVectorCurve(UCurveVector* Curve)
 		Curve->FloatCurves[1].Reset();
 		Curve->FloatCurves[2].Reset();
 	}
+}
+
+float UFreeAnimHelpersLibrary::GetAnimationNotifyAbsTime(const FAnimNotifyEvent& AnimNotify)
+{
+	return AnimNotify.GetTime(EAnimLinkMethod::Absolute);
 }
 
 FTransform UFreeAnimHelpersLibrary::GetBonePositionAtTimeInCS_ToParent(const UAnimSequence* AnimationSequence, const FName& BoneName, float Time, const FTransform& ParentBonePos, const int32 ParentBoneIndex)
